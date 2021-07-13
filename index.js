@@ -73,12 +73,19 @@ const customerSavedSearches_lookup = async (id) => {
     */
 }
 
+const orders_lookup = async (id) => {
+    const response = await shopifyApi(`/admin/api/2021-07/orders/${id}.json`);
+    return response.data.order;
+    // Reponse: https://shopify.dev/api/admin/rest/reference/orders/order#show-2021-07
+
+}
 
 async function main() {
     const CODE = process.env.COUPON_CODE;
     const discountCode = await discountCodes_lookup(CODE);
     const priceRule = await priceRules_details(discountCode.price_rule_id);
     const customerSearch = await customerSavedSearches_lookup(priceRule.prerequisite_saved_search_ids);
+
     console.log(`
 CODE: ${CODE}
 - Usage: ${discountCode.usage_count}
@@ -93,5 +100,10 @@ Price Rule:
 CustomerSearch Details:
 - Query: ${customerSearch.query}
 `);
+    [].forEach(async (id) => {
+        const order = await orders_lookup(id);
+        console.log(`${id}: ${order.confirmed}`);
+    })
+    
 }
 main()
