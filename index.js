@@ -1,9 +1,23 @@
-require('dotenv').config()
-const axios = require('axios');
+import axios from "axios";
 const shopifyApi = axios.create({
     baseURL: `https://${process.env.SHOPIFY_NAME}.myshopify.com`,
     headers: {'X-Shopify-Access-Token': process.env.SHOPIFY_TOKEN}
 });
+
+
+const products_list = async () => {
+    // https://shopify.dev/api/admin-rest/2021-10/resources/product#[get]/admin/api/2021-10/products.json
+    const response = await shopifyApi("/admin/api/2021-10/products.json");
+    return response.data.products;
+}
+
+const variants_modify = async(id, params) => {
+    // https://shopify.dev/api/admin-rest/2021-10/resources/product-variant#[put]/admin/api/2021-10/variants/{variant_id}.json
+    // variants_modify(123456, {compare_at_price: '100.00'});
+    const data = {variant: {id, ...params}}
+    const response = await shopifyApi.put(`/admin/api/2021-10/variants/${id}.json`, data);
+    return response.data;
+}
 
 const discountCodes_lookup = async (code) => {
     const response = await shopifyApi("/admin/api/2021-07/discount_codes/lookup.json", {params: {code}});
@@ -80,7 +94,7 @@ const orders_lookup = async (id) => {
 
 }
 
-async function main() {
+async function coupon_code_lookup() {
     const CODE = process.env.COUPON_CODE;
     const discountCode = await discountCodes_lookup(CODE);
     const priceRule = await priceRules_details(discountCode.price_rule_id);
@@ -104,6 +118,17 @@ CustomerSearch Details:
         const order = await orders_lookup(id);
         console.log(`${id}: ${order.confirmed}`);
     })
-    
+
 }
-main()
+
+async function price_flip() {
+    const products = await products_list();
+    for ( let product of products) {
+        console.log(`${product['id']}: ${product['title']}`);
+        for ( let v of product['variants']) {
+            console.log(`  ${v['title']} (${v['id']}): ${v['compare_at_price']} -> ${v['price']}`);
+        }
+    }
+
+}
+price_flip()
