@@ -82,12 +82,15 @@ async function variant_list() {
         for ( let v of product['variants']) {
             total++;
             console.log(`  ${v['title']} (${v['id']}): ${v['compare_at_price']} -> ${v['price']}`);
-            //await variants_modify(v['id'], {compare_at_price: '', price: v['compare_at_price']});
+            // Revert discount
+            if (v['compare_at_price']) {
+                await variants_modify(v['id'], {compare_at_price: '', price: v['compare_at_price']});
+            }
+
         }
     }
     console.log(`Total Variants: ${total}`);
 }
-
 
 const shopifyGraphQL = async (data) => {
     const a = axios.create({
@@ -127,4 +130,5 @@ const showDiscounts = async () => {
     console.log(response);
 }
 //showDiscounts();
-testGraphQL();
+//testGraphQL();
+variant_list();

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "server": "nodemon -r dotenv/config server.js",
     "graphql": "tsc graphql.ts; node -r dotenv/config graphql.js",
