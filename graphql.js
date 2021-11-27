@@ -37,24 +37,66 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var shopify_api_1 = require("@shopify/shopify-api");
+var client = new shopify_api_1["default"].Clients.Graphql(process.env.SHOPIFY_NAME + ".myshopify.com", process.env.SHOPIFY_TOKEN);
+if (!client) {
+    console.log("Could not access Shopify");
+    process.exit(1);
+}
+var queryGetPriceRules = "\n{\n  priceRules(first: 10) {\n    edges {\n      node {\n        id,\n        createdAt,\n        discountCodes(first: 10) {\n          edges {\n            node {\n              id\n              code\n            }\n          }\n        }\n      }\n    }\n  }\n}";
+var queryGetCodeDetails = "\nquery couponCode($id: ID!){\n  codeDiscountNode(id: $id) {\n    codeDiscount {\n      ... on DiscountCodeBasic {\n        title\n        customerGets {\n          appliesOnSubscription\n          appliesOnOneTimePurchase\n        }\n      }\n    }\n  }\n}\n";
+var queryGetCouponId = "\nquery getCouponGid($code: String!){\n  codeDiscountNodeByCode(code: $code) {\n    id,\n  }\n}";
+var mutationCustomerGets = "mutation discountCodeBasicUpdate($basicCodeDiscount: DiscountCodeBasicInput!, $id: ID!) {\n  discountCodeBasicUpdate(basicCodeDiscount: $basicCodeDiscount, id: $id) {\n    codeDiscountNode {\n      id\n    }\n  }\n}\n";
+var variables = {
+    basicCodeDiscount: {
+        customerGets: {
+            appliesOnSubscription: true,
+            appliesOnOneTimePurchase: true
+        }
+    },
+    id: "gid://shopify/DiscountCodeNode/1057750450414",
+    code: "THANKS-RRFBCPH"
+};
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var client, products;
+    var results, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                client = new shopify_api_1["default"].Clients.Graphql(
-                // @ts-ignore
-                process.env.SHOPIFY_NAME + ".myshopify.com", 
-                // @ts-ignore
-                process.env.SHOPIFY_TOKEN);
+                _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, client.query({
-                        data: "{\n        products (first: 10) {\n          edges {\n            node {\n              id\n              title\n              descriptionHtml\n            }\n          }\n        }\n      }"
+                        data: { query: queryGetCouponId, variables: variables }
                     })];
             case 1:
-                products = _a.sent();
-                // @ts-ignore
-                console.dir(products.body.data.products.edges);
-                return [2 /*return*/];
+                results = _a.sent();
+                //console.log(results.body);
+                console.log(JSON.stringify(results.body.data.codeDiscountNodeByCode.id));
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                console.log("error");
+                console.log(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); })();
+/*
+// https://github.com/Shopify/shopify-node-api/issues/212
+const graphqlResponse = await client.query({
+  data: {
+    query: `query myTestQuery($first: Int) {
+      products (first: $first) {
+        edges {
+          node {
+            id
+            title
+            descriptionHtml
+          }
+        }
+      }
+    }`,
+    variables: {
+      first: 10,
+    },
+  }
+});
+*/ 
