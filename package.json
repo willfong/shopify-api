@@ -1,24 +1,24 @@
 {
-  "name": "shopify-api",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "type": "module",
-  "scripts": {
-    "server": "nodemon -r dotenv/config server.js",
-    "graphql": "tsc graphql.ts; node -r dotenv/config graphql.js",
-    "rest": "node -r dotenv/config rest.js"
-  },
-  "dependencies": {
-    "@shopify/shopify-api": "^1.4.1",
-    "axios": "^0.22.0",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "morgan": "^1.10.0"
-  },
-  "devDependencies": {
-    "@types/node": "^16.10.7",
-    "nodemon": "^2.0.13",
-    "typescript": "^4.4.4"
-  }
+	"name": "shopify-api",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"server": "nodemon -r dotenv/config server.js",
+		"graphql": "tsc graphql.ts; node -r dotenv/config graphql.js",
+		"rest": "node -r dotenv/config rest.js"
+	},
+	"dependencies": {
+		"@shopify/shopify-api": "^1.4.1",
+		"axios": "^0.22.0",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"morgan": "^1.10.0"
+	},
+	"devDependencies": {
+		"@types/node": "^16.10.7",
+		"nodemon": "^2.0.13",
+		"typescript": "^4.4.4"
+	}
 }
