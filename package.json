@@ -7,7 +7,9 @@
 	"scripts": {
 		"server": "nodemon -r dotenv/config server.js",
 		"graphql": "tsc graphql.ts; node -r dotenv/config graphql.js",
-		"rest": "node -r dotenv/config rest.js"
+		"rest": "node -r dotenv/config rest.js",
+		"yca-discount": "node -r dotenv/config yca-discount.js",
+		"yca-revert": "node -r dotenv/config yca-revert.js"
 	},
 	"dependencies": {
 		"@shopify/shopify-api": "^1.4.1",

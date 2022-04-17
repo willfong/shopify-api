@@ -1,18 +1,18 @@
 import axios from "axios";
 // https://www.shopify.com.sg/partners/blog/getting-started-with-graphql
 
-const shopifyApi = axios.create({
+export const shopifyApi = axios.create({
 	baseURL: `https://${process.env.SHOPIFY_NAME}.myshopify.com`,
 	headers: { "X-Shopify-Access-Token": process.env.SHOPIFY_TOKEN },
 });
 
-const products_list = async () => {
+export const products_list = async () => {
 	// https://shopify.dev/api/admin-rest/2021-10/resources/product#[get]/admin/api/2021-10/products.json
 	const response = await shopifyApi("/admin/api/2021-10/products.json");
 	return response.data.products;
 };
 
-const variants_modify = async (id, params) => {
+export const variants_modify = async (id, params) => {
 	// https://shopify.dev/api/admin-rest/2021-10/resources/product-variant#[put]/admin/api/2021-10/variants/{variant_id}.json
 	// variants_modify(123456, {compare_at_price: '100.00'});
 	const data = { variant: { id, ...params } };
@@ -128,4 +128,4 @@ const showDiscounts = async () => {
 };
 //showDiscounts();
 //testGraphQL();
-variant_list();
+//variant_list();
